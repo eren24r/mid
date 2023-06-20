@@ -1,6 +1,6 @@
 import {session, Telegraf, Markup} from 'telegraf'
 import { message } from 'telegraf/filters'
-import timeout from 'p-timeout'
+import timeout, {TimeoutError} from 'p-timeout'
 import {code, link} from 'telegraf/format'
 import config from 'config'
 import { ogg } from './ogg.js'
@@ -27,6 +27,15 @@ bot.use(session())
 // новый контекс
 bot.command('start', initCommand)
 
+let cpt = "Images are numbered from left to right, then from top to bottom\n" +
+    "\n" +
+    "U-Upscale\n" +
+    "\n" +
+    "V - Variations\n" +
+    "\n" +
+    "🔄 - New query\n" +
+    "\n" +
+    "Reset - back to prompt"
 let msgId = null;
 
 bot.on(message('text'), async (ctx) => {
@@ -60,11 +69,19 @@ bot.on(message('text'), async (ctx) => {
         await kerDown(imageUr, msgId);
 
         //await ctx.replyWithPhoto({ source: `img/${msgId}.png` },   Extra.markup(keyboard ));
-        await ctx.telegram.sendPhoto(ctx.message.chat.id, { source: `img/${msgId}.png` }, keyboard)
+        await ctx.telegram.sendPhoto(ctx.message.chat.id, { source: `img/${msgId}.png`, caption: cpt}, keyboard)
 
         await ctx.reply(tmp);
     }catch (e){
-        await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        if (e instanceof TimeoutError) {
+            // Обработка ошибки TimeoutError
+            console.log("Время выполнения превысило ограничение");
+            await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        } else {
+            // Обработка других ошибок
+            console.log("Произошла другая ошибка:", e);
+            await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        }
     }
 })
 
@@ -80,7 +97,15 @@ await bot.action('U1', async (ctx) => {
         await kerDown(U1, `${buttonId}U1`);
         await ctx.replyWithDocument({ source: `img/${buttonId}U1.png`});
     }catch (e){
-        await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        if (e instanceof TimeoutError) {
+            // Обработка ошибки TimeoutError
+            console.log("Время выполнения превысило ограничение");
+            await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        } else {
+            // Обработка других ошибок
+            console.log("Произошла другая ошибка:", e);
+            await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        }
     }
 });
 
@@ -96,7 +121,15 @@ await bot.action('U2', async(ctx) => {
         await kerDown(U2, `${buttonId}U2`);
         await ctx.replyWithDocument({source: `img/${buttonId}U2.png`});
     }catch(e){
-        await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        if (e instanceof TimeoutError) {
+            // Обработка ошибки TimeoutError
+            console.log("Время выполнения превысило ограничение");
+            await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        } else {
+            // Обработка других ошибок
+            console.log("Произошла другая ошибка:", e);
+            await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        }
     }
 });
 
@@ -112,7 +145,15 @@ await bot.action('U3', async(ctx) => {
         await kerDown(U3, `${buttonId}U3`);
         await ctx.replyWithDocument({source: `img/${buttonId}U3.png`});
     }catch (e){
-        await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        if (e instanceof TimeoutError) {
+            // Обработка ошибки TimeoutError
+            console.log("Время выполнения превысило ограничение");
+            await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        } else {
+            // Обработка других ошибок
+            console.log("Произошла другая ошибка:", e);
+            await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        }
     }
 });
 
@@ -128,7 +169,15 @@ await bot.action('U4', async(ctx) => {
         await kerDown(U4, `${buttonId}U4`);
         await ctx.replyWithDocument({source: `img/${buttonId}U4.png`});
     }catch (e){
-        await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        if (e instanceof TimeoutError) {
+            // Обработка ошибки TimeoutError
+            console.log("Время выполнения превысило ограничение");
+            await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        } else {
+            // Обработка других ошибок
+            console.log("Произошла другая ошибка:", e);
+            await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        }
     }
 });
 
@@ -158,10 +207,18 @@ await bot.action('V1', async(ctx) => {
         let buttonId = await buttonGetId(ctx, msgId);
 
         msgId = await buttonsVVV(ctx, "V1", buttonId);
-        await bot.telegram.sendPhoto(ctx.chat.id, {source: `img/${buttonId}V1.png`}, keyboard)
+        await bot.telegram.sendPhoto(ctx.chat.id, {source: `img/${buttonId}V1.png`, caption: cpt}, keyboard)
         console.log(msgId);
     }catch (e){
-        await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        if (e instanceof TimeoutError) {
+            // Обработка ошибки TimeoutError
+            console.log("Время выполнения превысило ограничение");
+            await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        } else {
+            // Обработка других ошибок
+            console.log("Произошла другая ошибка:", e);
+            await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        }
     }
 });
 
@@ -191,10 +248,18 @@ await bot.action('V2', async(ctx) => {
         let buttonId = await buttonGetId(ctx, msgId);
 
         msgId = await buttonsVVV(ctx, "V2", buttonId);
-        await bot.telegram.sendPhoto(ctx.chat.id, {source: `img/${buttonId}V2.png`}, keyboard)
+        await bot.telegram.sendPhoto(ctx.chat.id, {source: `img/${buttonId}V2.png`, caption: cpt}, keyboard)
         console.log(msgId);
     }catch (e){
-        await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        if (e instanceof TimeoutError) {
+            // Обработка ошибки TimeoutError
+            console.log("Время выполнения превысило ограничение");
+            await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        } else {
+            // Обработка других ошибок
+            console.log("Произошла другая ошибка:", e);
+            await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        }
     }
 });
 
@@ -224,10 +289,18 @@ await bot.action('V3', async(ctx) => {
         let buttonId = await buttonGetId(ctx, msgId);
 
         msgId = await buttonsVVV(ctx, "V3", buttonId);
-        await bot.telegram.sendPhoto(ctx.chat.id, {source: `img/${buttonId}V3.png`}, keyboard)
+        await bot.telegram.sendPhoto(ctx.chat.id, {source: `img/${buttonId}V3.png`, caption: cpt}, keyboard)
         console.log(msgId);
     }catch (e){
-        await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        if (e instanceof TimeoutError) {
+            // Обработка ошибки TimeoutError
+            console.log("Время выполнения превысило ограничение");
+            await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        } else {
+            // Обработка других ошибок
+            console.log("Произошла другая ошибка:", e);
+            await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        }
     }
 });
 
@@ -258,10 +331,18 @@ await bot.action('V4', async(ctx) => {
 
         ///let V4 = await buttonsVVV(ctx, "V4", buttonId);
         msgId = await buttonsVVV(ctx, "V4", buttonId);
-        await bot.telegram.sendPhoto(ctx.chat.id, {source: `img/${buttonId}V4.png`}, keyboard)
+        await bot.telegram.sendPhoto(ctx.chat.id, {source: `img/${buttonId}V4.png`, caption: cpt}, keyboard)
         console.log(msgId);
     }catch (e){
-        await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        if (e instanceof TimeoutError) {
+            // Обработка ошибки TimeoutError
+            console.log("Время выполнения превысило ограничение");
+            await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        } else {
+            // Обработка других ошибок
+            console.log("Произошла другая ошибка:", e);
+            await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        }
     }
 });
 
@@ -291,10 +372,18 @@ await bot.action('button7', async(ctx) => {
 
         ///let V4 = await buttonsVVV(ctx, "V4", buttonId);
         msgId = await buttonsVVV(ctx, "🔄", buttonId);
-        await bot.telegram.sendPhoto(ctx.chat.id, {source: `img/${buttonId}🔄.png`}, keyboard)
+        await bot.telegram.sendPhoto(ctx.chat.id, {source: `img/${buttonId}🔄.png`, caption: cpt}, keyboard)
         console.log(msgId);
     }catch (e){
-        await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        if (e instanceof TimeoutError) {
+            // Обработка ошибки TimeoutError
+            console.log("Время выполнения превысило ограничение");
+            await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        } else {
+            // Обработка других ошибок
+            console.log("Произошла другая ошибка:", e);
+            await ctx.telegram.sendMessage(ctx.chat.id, "МидЖерни не отвечает.\nПовторите поже!")
+        }
     }
 });
 

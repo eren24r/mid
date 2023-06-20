@@ -22,36 +22,37 @@ export async function chatMidGen2(ctx, msgId) {
     let neww;
     await sleep(28000);
     const editPro = await ctx.reply("0%")
-    const ker = async () => {
-        try {
-        while (bl) {
-            await axios(config)
-                .then(function (response) {
-                    neww = response.data.progress;
-                    if (last != neww) {
-                        ctx.telegram.editMessageText(ctx.message.chat.id, editPro.message_id, editPro.message_id, neww + "%")
-                        console.log(neww)
+    let kerBl = "🔴"
+    let message = ""
+    try {
+    while (bl) {
+        await axios(config)
+            .then(function (response) {
+                neww = response.data.progress;
+                if (last != neww) {
+                    message = "";
+                    for(let i = 1; i < (neww / 10).valueOf(); i++){
+                        message = message + kerBl;
                     }
-                    last = neww;
-                    if (last == 100) {
-                        bl = false
-                        last = 101;
-                        img = response.data.response.imageUrl;
-                        ctx.telegram.sendMessage(ctx.message.chat.id, "finished!")
-                        //ctx.reply("Finished!");
-                    }
-                })
-                .catch(function (error) {
-                    console.log("errorAxios");
-                });
-        }
-        }catch (e){
-            console.log("Request Error!");
-        }
+                    ctx.telegram.editMessageText(ctx.message.chat.id, editPro.message_id, editPro.message_id, message + neww + "%")
+                    console.log(neww)
+                }
+                last = neww;
+                if (last == 100) {
+                    bl = false
+                    last = 101;
+                    img = response.data.response.imageUrl;
+                    ctx.telegram.sendMessage(ctx.message.chat.id, "finished!")
+                    //ctx.reply("Finished!");
+                }
+            })
+            .catch(function (error) {
+                console.log("errorAxios");
+            });
     }
-
-    await ker();
-    setTimeout(await ker, 20000);
+    }catch (e){
+        console.log("Request Error!");
+    }
 
     return img;
 }
